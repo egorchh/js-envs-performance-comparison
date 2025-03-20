@@ -16,8 +16,8 @@ import {
     Header,
     PresetSelect
 } from '../components';
-import {RUN_CODE_FAILED_REQUEST, RUN_CODE_FATAL_CODE_ERROR} from '../constants';
-import {RunCodeResponseDto, Settings} from '../types';
+import { RUN_CODE_FAILED_REQUEST, RUN_CODE_FATAL_CODE_ERROR } from '../constants';
+import { RunCodeResponseDto, Settings } from '../types';
 import { runCodeAsync } from '../api';
 import './styles.css';
 
