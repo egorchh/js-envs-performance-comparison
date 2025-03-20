@@ -68,7 +68,7 @@ export const ResultsView = ({ results }: Props) => {
                         {env}
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
-                        Время выполнения: {result.averageTime || result.executionTime} мс
+                        Среднее время выполнения: {result.averageTime || result.executionTime} мс
                         {result.totalTime && (
                             <>
                                 <br />
