@@ -57,9 +57,9 @@ app.post('/api/run', async (req, res) => {
 
         const results = await runInEnvironments(code, settings);
         res.json(results);
-    } catch (error) {
-        console.error('Error running code:', error);
-        res.status(500).json({ error: error.message });
+    } catch ({ message }) {
+        console.error('Error running code:', message);
+        res.status(500).json({ error: message });
     }
 });
 
