@@ -33,9 +33,10 @@ jobs:
                   heroku --version
 
             - name: Login to Heroku
-              uses: akhileshns/heroku-deploy@v3.13.15
-              with:
-                  heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
-                  heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
-                  heroku_email: ${{ secrets.HEROKU_EMAIL }}
-                  appdir: "."
+              run: |
+                  heroku login:api ${{ secrets.HEROKU_API_KEY }}
+
+            - name: Deploy to Heroku
+              run: |
+                  git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
+                  git push heroku main:main
