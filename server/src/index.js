@@ -14,7 +14,8 @@ const port = process.env.PORT || 3000;
 app.use(cors({
     origin: [
         'https://egorchh.github.io',
-        'http://localhost:5173'
+        'http://localhost:5173',
+        'https://js-envs-performance-comparison-8cefb3e43324.herokuapp.com'
     ],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
