@@ -12,7 +12,7 @@ export const runCodeAsync = async (
     }
 ): Promise<RunCodeResponseDto> => {
     try {
-        const response = await fetch(`${API_URL}/api/run`, {
+        const response = await fetch(`${API_URL}api/run`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
