@@ -1,4 +1,4 @@
-import {RunCodeResponseDto, Settings} from '../types';
+import { RunCodeResponseDto, Settings } from '../types';
 
 const API_URL = import.meta.env.VITE_API_URL || 'https://js-envs-performance-comparison-8cefb3e43324.herokuapp.com';
 
@@ -12,7 +12,7 @@ export const runCodeAsync = async (
     }
 ): Promise<RunCodeResponseDto> => {
     try {
-        const response = await fetch(`${API_URL}/api/run`, {
+        const response = await fetch(`${API_URL}api/run`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',

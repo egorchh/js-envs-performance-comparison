@@ -11,24 +11,17 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
-// CORS configuration
-const corsOptions = {
+app.use(cors({
     origin: [
         'https://egorchh.github.io',
-        'http://localhost:5173',
-        'https://js-envs-performance-comparison.herokuapp.com'
+        'http://localhost:5173'
     ],
-    methods: ['GET', 'POST'],
-    allowedHeaders: ['Content-Type', 'Authorization'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     credentials: true
-};
-
-// Middleware
-app.use(cors(corsOptions));
+}));
 app.use(express.json());
 app.use(morgan('dev'));
 
-// Health check endpoint
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
@@ -44,7 +37,6 @@ if (process.env.NODE_ENV === 'production') {
         }
     }));
 
-    // Error handling for static files
     app.use((err, req, res, next) => {
         if (err.status === 404) {
             res.sendFile(join(__dirname, '../../client/dist/index.html'));
@@ -76,7 +68,6 @@ if (process.env.NODE_ENV === 'production') {
     });
 }
 
-// Global error handler
 app.use((err, req, res, next) => {
     console.error(err.stack);
     res.status(500).json({ error: 'Something went wrong!' });
