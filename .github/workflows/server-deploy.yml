@@ -32,23 +32,20 @@ jobs:
                   curl https://cli-assets.heroku.com/install.sh | sh
                   heroku --version
 
-            - name: Login to Heroku
-              env:
-                  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
-                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
-              run: |
-                  mkdir -p ~/.netrc
-                  echo "machine api.heroku.com login $HEROKU_EMAIL password $HEROKU_API_KEY" > ~/.netrc
-                  chmod 600 ~/.netrc
-
             - name: Check Heroku access
+              env:
+                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
               run: |
                   heroku apps:info -a ${{ secrets.HEROKU_APP_NAME }}
 
             - name: Build and push Docker image
+              env:
+                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
               run: |
                   heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
 
             - name: Release the container
+              env:
+                  HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
               run: |
                   heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
