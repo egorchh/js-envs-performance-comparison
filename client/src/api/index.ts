@@ -1,6 +1,6 @@
 import {RunCodeResponseDto, Settings} from '../types';
 
-const API_URL = import.meta.env.VITE_API_URL || '';
+const API_URL = import.meta.env.VITE_API_URL || 'https://js-envs-performance-comparison-8cefb3e43324.herokuapp.com';
 
 export const runCodeAsync = async (
     {
