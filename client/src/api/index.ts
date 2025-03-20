@@ -1,5 +1,7 @@
 import {RunCodeResponseDto, Settings} from '../types';
 
+const API_URL = import.meta.env.VITE_API_URL || '';
+
 export const runCodeAsync = async (
     {
         code,
@@ -10,7 +12,7 @@ export const runCodeAsync = async (
     }
 ): Promise<RunCodeResponseDto> => {
     try {
-        const response = await fetch('/api/run', {
+        const response = await fetch(`${API_URL}/api/run`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -20,6 +22,10 @@ export const runCodeAsync = async (
                 settings
             }),
         });
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
 
         return response.json();
     } catch (error) {
