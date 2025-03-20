@@ -6,13 +6,11 @@ on:
         paths:
             - "server/**"
             - ".github/workflows/server-deploy.yml"
+            - "package.json"
 
 jobs:
     build:
         runs-on: ubuntu-latest
-        defaults:
-            run:
-                working-directory: ./server
 
         steps:
             - uses: actions/checkout@v4
@@ -25,7 +23,9 @@ jobs:
                   cache-dependency-path: "./server/package-lock.json"
 
             - name: Install dependencies
-              run: npm ci
+              run: |
+                  npm ci
+                  cd server && npm ci
 
             - name: Install Heroku CLI
               run: |
@@ -38,4 +38,4 @@ jobs:
                   heroku_api_key: ${{ secrets.HEROKU_API_KEY }}
                   heroku_app_name: ${{ secrets.HEROKU_APP_NAME }}
                   heroku_email: ${{ secrets.HEROKU_EMAIL }}
-                  appdir: "server"
+                  appdir: "."
