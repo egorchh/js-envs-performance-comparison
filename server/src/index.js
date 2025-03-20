@@ -11,8 +11,20 @@ const __dirname = dirname(__filename);
 const app = express();
 const port = process.env.PORT || 3000;
 
+// CORS configuration
+const corsOptions = {
+    origin: [
+        'https://egorchh.github.io',
+        'http://localhost:5173',
+        'https://js-envs-performance-comparison.herokuapp.com'
+    ],
+    methods: ['GET', 'POST'],
+    allowedHeaders: ['Content-Type', 'Authorization'],
+    credentials: true
+};
+
 // Middleware
-app.use(cors());
+app.use(cors(corsOptions));
 app.use(express.json());
 app.use(morgan('combined'));
 

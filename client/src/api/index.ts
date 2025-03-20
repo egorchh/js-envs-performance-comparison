@@ -16,7 +16,9 @@ export const runCodeAsync = async (
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Accept': 'application/json',
             },
+            credentials: 'include',
             body: JSON.stringify({
                 code,
                 settings
@@ -24,7 +26,8 @@ export const runCodeAsync = async (
         });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorData = await response.json().catch(() => ({}));
+            throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }
 
         return response.json();
