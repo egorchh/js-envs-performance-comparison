@@ -36,10 +36,16 @@ jobs:
               env:
                   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
               run: |
-                  echo "machine api.heroku.com login $HEROKU_EMAIL password $HEROKU_API_KEY" > ~/.netrc
-                  chmod 600 ~/.netrc
+                  echo "$HEROKU_API_KEY" | heroku login --api
 
-            - name: Deploy to Heroku
+            - name: Check Heroku access
               run: |
-                  git remote add heroku https://git.heroku.com/${{ secrets.HEROKU_APP_NAME }}.git
-                  git push heroku main:main
+                  heroku apps:info -a ${{ secrets.HEROKU_APP_NAME }}
+
+            - name: Build and push Docker image
+              run: |
+                  heroku container:push web -a ${{ secrets.HEROKU_APP_NAME }}
+
+            - name: Release the container
+              run: |
+                  heroku container:release web -a ${{ secrets.HEROKU_APP_NAME }}
