@@ -170,6 +170,7 @@ async function runMultipleTimes(runner, code, timeout, runs) {
     return {
         averageTime,
         executionTime: results[0],
+        totalTime: results.reduce((a, b) => a + b, 0),
     };
 }
 

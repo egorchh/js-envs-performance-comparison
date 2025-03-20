@@ -24,6 +24,7 @@ type Props = {
     results: Record<string, {
         averageTime: number,
         executionTime: number,
+        totalTime?: number,
         output: string,
         error: string
     }>;
@@ -34,7 +35,7 @@ export const ResultsView = ({ results }: Props) => {
         labels: Object.keys(results),
         datasets: [
             {
-                label: 'Время выполнения (мс)',
+                label: 'Среднее время выполнения (мс)',
                 data: Object.values(results).map(r => r.averageTime || r.executionTime),
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.6)',
@@ -68,6 +69,12 @@ export const ResultsView = ({ results }: Props) => {
                     </Typography>
                     <Typography variant="body2" color="text.secondary">
                         Время выполнения: {result.averageTime || result.executionTime} мс
+                        {result.totalTime && (
+                            <>
+                                <br />
+                                Общее время: {result.totalTime} мс
+                            </>
+                        )}
                     </Typography>
                     {result.output && (
                         <Box sx={{ mt: 1, p: 1, bgcolor: 'background.paper', borderRadius: 1 }}>
