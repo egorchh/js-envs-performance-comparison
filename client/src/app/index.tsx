@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Toaster } from 'react-hot-toast';
+import toast, { Toaster } from 'react-hot-toast';
 import {
     Box,
     Container,
@@ -16,7 +16,9 @@ import {
     Header,
     PresetSelect
 } from '../components';
-import { Settings } from '../types';
+import {RUN_CODE_FAILED_REQUEST, RUN_CODE_FATAL_CODE_ERROR} from '../constants';
+import {RunCodeResponseDto, Settings} from '../types';
+import { runCodeAsync } from '../api';
 import './styles.css';
 
 const darkTheme = createTheme({
@@ -38,8 +40,10 @@ const AppContent = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
-    const [code, setCode] = useState<string | undefined>('// Введите ваш JavaScript код здесь\nconsole.log("Hello, World!");');
-    const [results, setResults] = useState(null);
+    const [code, setCode] = useState<string | undefined>(
+        '// Введите ваш JavaScript код здесь или воспользуйтесь заготовками\nconsole.log("Hello, World!");'
+    );
+    const [results, setResults] = useState<RunCodeResponseDto | null>(null);
     const [settings, setSettings] = useState<Settings>({
         timeout: 5000,
         runs: 3,
@@ -48,27 +52,23 @@ const AppContent = () => {
             deno: true,
             bun: true
         },
-        mode: 'single' // 'single' | 'average' | 'async'
+        mode: 'single'
     });
 
-    const handleRunCode = async () => {
-        try {
-            const response = await fetch('/api/run', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
-                    code,
-                    settings
-                }),
-            });
+    const handleRunCode = () => {
+        runCodeAsync({ code, settings })
+            .then((data) => {
+                const hasError = Object.values(data).some((env) => env.error);
 
-            const data = await response.json();
-            setResults(data);
-        } catch (error) {
-            console.error('Error running code:', error);
-        }
+                if (hasError) {
+                    toast.error(RUN_CODE_FATAL_CODE_ERROR);
+                }
+
+                setResults(data);
+            })
+            .catch(() => {
+                toast.error(RUN_CODE_FAILED_REQUEST);
+            });
     };
 
     return (
@@ -96,7 +96,7 @@ const AppContent = () => {
                         />
                     </Box>
                     <Box>
-                        <PresetSelect />
+                        <PresetSelect onChange={setCode} />
                         <SettingsPanel
                             settings={settings}
                             onSettingsChange={setSettings}

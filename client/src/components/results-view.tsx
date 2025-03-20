@@ -1,5 +1,3 @@
-import { useEffect } from 'react';
-import toast from 'react-hot-toast';
 import { Paper, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -13,6 +11,7 @@ import {
 } from 'chart.js';
 import { resultViewBarOptions } from '../constants';
 import { ResultError } from './result-error';
+import {RunCodeResponseDto} from "../types";
 
 ChartJS.register(
     CategoryScale,
@@ -24,26 +23,12 @@ ChartJS.register(
 );
 
 type Props = {
-    results: Record<string, {
-        averageTime: number,
-        executionTime: number,
-        totalTime?: number,
-        output: string,
-        error: string
-    }>;
+    results: RunCodeResponseDto;
 };
 
 export const ResultsView = ({ results }: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
-
-    useEffect(() => {
-        const hasErrors = Object.values(results).some((result) => result.error);
-
-        if (hasErrors) {
-            toast.error('Ошибка при выполнении кода, проверьте код на ошибки');
-        }
-    }, []);
 
     const chartData = {
         labels: Object.keys(results),

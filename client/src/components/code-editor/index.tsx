@@ -1,12 +1,12 @@
-import { Dispatch } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { Box, Paper } from '@mui/material';
 import Editor from '@monaco-editor/react';
 import styles from './styles.module.css';
 
 type Props = {
     value?: string;
-    onChange: Dispatch<React.SetStateAction<string | undefined>>;
     height?: string;
+    onChange: Dispatch<SetStateAction<string | undefined>>;
 };
 
 export const CodeEditor = ({ value, onChange, height = '70vh' }: Props) => {

@@ -8,3 +8,13 @@ export type Settings = {
     };
     mode: 'single' | 'average' | 'async';
 };
+
+export type EnvResponseDto = {
+    output: string;
+    error?: string;
+    executionTime: number;
+    averageTime: number;
+    totalTime?: number | undefined;
+}
+
+export type RunCodeResponseDto = Record<'node' | 'deno' | 'bun', EnvResponseDto>;

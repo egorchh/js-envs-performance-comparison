@@ -1,3 +1,6 @@
+export const RUN_CODE_FAILED_REQUEST = 'Ошибка отправки запроса, попробуйте позже'
+export const RUN_CODE_FATAL_CODE_ERROR = 'В коде присутствует ошибка. Исправьте её и попробуйте снова'
+
 export const resultViewBarOptions = {
     responsive: true,
     plugins: {
