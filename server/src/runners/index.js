@@ -73,7 +73,7 @@ async function runInDeno(code, timeout) {
 
     try {
         const startTime = performance.now();
-        const denoProcess = spawn(DENO_PATH, ['run', '--allow-none', path], {
+        const denoProcess = spawn(DENO_PATH, ['run', '--no-check', path], {
             timeout,
             env: { ...process.env }
         });
