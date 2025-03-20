@@ -34,9 +34,12 @@ jobs:
 
             - name: Login to Heroku
               env:
+                  HEROKU_EMAIL: ${{ secrets.HEROKU_EMAIL }}
                   HEROKU_API_KEY: ${{ secrets.HEROKU_API_KEY }}
               run: |
-                  echo "$HEROKU_API_KEY" | heroku login
+                  mkdir -p ~/.netrc
+                  echo "machine api.heroku.com login $HEROKU_EMAIL password $HEROKU_API_KEY" > ~/.netrc
+                  chmod 600 ~/.netrc
 
             - name: Check Heroku access
               run: |
