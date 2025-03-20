@@ -13,7 +13,6 @@ const port = process.env.PORT || 3000;
 app.use(cors());
 app.use(express.json());
 
-// Serve static files from the client build directory in production
 if (process.env.NODE_ENV === 'production') {
     const clientBuildPath = join(__dirname, '../../client/dist');
     app.use(express.static(clientBuildPath));
@@ -35,7 +34,6 @@ app.post('/api/run', async (req, res) => {
     }
 });
 
-// Handle client-side routing in production
 if (process.env.NODE_ENV === 'production') {
     app.get('*', (req, res) => {
         res.sendFile(join(__dirname, '../../client/dist/index.html'));

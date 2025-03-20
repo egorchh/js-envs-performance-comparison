@@ -10,6 +10,8 @@ import {
     TextField,
     Button,
     Stack,
+    useTheme,
+    useMediaQuery,
     type SelectProps,
     type TextFieldProps
 } from '@mui/material';
@@ -22,6 +24,9 @@ type Props = {
 };
 
 export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
+    const theme = useTheme();
+    const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+
     const handleEnvironmentChange = (environment: 'node' | 'deno' | 'bun') => {
         onSettingsChange({
             ...settings,
@@ -54,43 +59,55 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
     };
 
     return (
-        <Paper sx={{ p: 2, mb: 2 }}>
+        <Paper sx={{
+            p: { xs: 1.5, sm: 2 },
+            mb: { xs: 1.5, sm: 2 }
+        }}>
             <Typography variant="h6" gutterBottom>
                 Настройки
             </Typography>
 
-            <Stack spacing={2}>
+            <Stack spacing={{ xs: 1.5, sm: 2 }}>
                 <Box>
                     <Typography variant="subtitle2" gutterBottom>
                         Среды исполнения
                     </Typography>
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={settings.environments.node}
-                                onChange={() => handleEnvironmentChange('node')}
-                            />
-                        }
-                        label="Node.js"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={settings.environments.deno}
-                                onChange={() => handleEnvironmentChange('deno')}
-                            />
-                        }
-                        label="Deno"
-                    />
-                    <FormControlLabel
-                        control={
-                            <Checkbox
-                                checked={settings.environments.bun}
-                                onChange={() => handleEnvironmentChange('bun')}
-                            />
-                        }
-                        label="Bun"
-                    />
+                    <Box sx={{
+                        display: 'flex',
+                        flexDirection: { xs: 'column', sm: 'row' },
+                        gap: { xs: 0.5, sm: 1 }
+                    }}>
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={settings.environments.node}
+                                    onChange={() => handleEnvironmentChange('node')}
+                                    size={isMobile ? "small" : "medium"}
+                                />
+                            }
+                            label="Node.js"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={settings.environments.deno}
+                                    onChange={() => handleEnvironmentChange('deno')}
+                                    size={isMobile ? "small" : "medium"}
+                                />
+                            }
+                            label="Deno"
+                        />
+                        <FormControlLabel
+                            control={
+                                <Checkbox
+                                    checked={settings.environments.bun}
+                                    onChange={() => handleEnvironmentChange('bun')}
+                                    size={isMobile ? "small" : "medium"}
+                                />
+                            }
+                            label="Bun"
+                        />
+                    </Box>
                 </Box>
 
                 <FormControl fullWidth>
@@ -100,7 +117,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                     <Select
                         value={settings.mode}
                         onChange={handleModeChange}
-                        size="small"
+                        size={isMobile ? "small" : "medium"}
                     >
                         <MenuItem value="single">Одиночный запуск</MenuItem>
                         <MenuItem value="average">Среднее время</MenuItem>
@@ -116,7 +133,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                         type="number"
                         value={settings.timeout}
                         onChange={handleTimeoutChange}
-                        size="small"
+                        size={isMobile ? "small" : "medium"}
                     />
                 </FormControl>
 
@@ -129,7 +146,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                             type="number"
                             value={settings.runs}
                             onChange={handleRunsChange}
-                            size="small"
+                            size={isMobile ? "small" : "medium"}
                         />
                     </FormControl>
                 )}
@@ -138,6 +155,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                     variant="contained"
                     onClick={onRun}
                     fullWidth
+                    size={isMobile ? "small" : "medium"}
                 >
                     Запустить
                 </Button>

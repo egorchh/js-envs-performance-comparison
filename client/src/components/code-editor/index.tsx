@@ -1,22 +1,25 @@
 import { Dispatch } from 'react';
 import { Box, Paper } from '@mui/material';
 import Editor from '@monaco-editor/react';
+import styles from './styles.module.css';
 
 type Props = {
     value?: string;
     onChange: Dispatch<React.SetStateAction<string | undefined>>;
+    height?: string;
 };
 
-export const CodeEditor = ({ value, onChange }: Props) => {
+export const CodeEditor = ({ value, onChange, height = '70vh' }: Props) => {
     const handleEditorChange = (newValue?: string) => {
         onChange(newValue);
     };
 
     return (
-        <Paper sx={{ height: '70vh' }}>
+        <Paper sx={{ height }}>
             <Box sx={{ height: '100%' }}>
                 <Editor
                     height="100%"
+                    className={styles.editor}
                     defaultLanguage="javascript"
                     theme="vs-dark"
                     value={value}
