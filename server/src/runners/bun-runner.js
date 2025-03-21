@@ -5,17 +5,33 @@ export async function runInBun(code, timeout) {
     const { path, cleanup } = await createTempFile(code);
     const { bun: BUN_PATH } = getRuntimePaths();
 
+    console.log(`Attempting to run Bun at path: ${BUN_PATH}`);
+
     try {
         // Проверяем наличие Bun
         const bunVersionProcess = spawn(BUN_PATH, ['--version']);
         await new Promise((resolve, reject) => {
-            bunVersionProcess.on('error', () => {
-                reject(new Error('Bun is not installed or not accessible'));
+            let versionOutput = '';
+
+            bunVersionProcess.stdout.on('data', (data) => {
+                versionOutput += data.toString();
             });
+
+            bunVersionProcess.stderr.on('data', (data) => {
+                console.error(`Bun version check stderr: ${data}`);
+            });
+
+            bunVersionProcess.on('error', (err) => {
+                console.error(`Failed to start Bun: ${err.message}`);
+                reject(new Error(`Bun is not installed or not accessible at ${BUN_PATH}`));
+            });
+
             bunVersionProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error('Failed to verify Bun installation'));
+                    console.error(`Bun version check failed with code ${code}`);
+                    reject(new Error(`Failed to verify Bun installation (exit code: ${code})`));
                 }
+                console.log(`Bun version: ${versionOutput.trim()}`);
                 resolve();
             });
         });

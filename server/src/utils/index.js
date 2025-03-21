@@ -5,9 +5,13 @@ import { writeFile } from 'fs/promises';
 
 export function getRuntimePaths() {
     if (process.env.NODE_ENV === 'production') {
+        if (!process.env.DENO_PATH || !process.env.BUN_PATH) {
+            console.warn('DENO_PATH or BUN_PATH environment variables are not set');
+        }
+
         return {
-            deno: process.env.DENO_PATH || 'deno',
-            bun: process.env.BUN_PATH || 'bun'
+            deno: process.env.DENO_PATH || '/app/.deno/bin/deno',
+            bun: process.env.BUN_PATH || '/app/.bun/bin/bun'
         };
     }
 

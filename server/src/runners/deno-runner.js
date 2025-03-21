@@ -5,17 +5,33 @@ export async function runInDeno(code, timeout) {
     const { path, cleanup } = await createTempFile(code);
     const { deno: DENO_PATH } = getRuntimePaths();
 
+    console.log(`Attempting to run Deno at path: ${DENO_PATH}`);
+
     try {
         // Проверяем наличие Deno
         const denoVersionProcess = spawn(DENO_PATH, ['--version']);
         await new Promise((resolve, reject) => {
-            denoVersionProcess.on('error', () => {
-                reject(new Error('Deno is not installed or not accessible'));
+            let versionOutput = '';
+
+            denoVersionProcess.stdout.on('data', (data) => {
+                versionOutput += data.toString();
             });
+
+            denoVersionProcess.stderr.on('data', (data) => {
+                console.error(`Deno version check stderr: ${data}`);
+            });
+
+            denoVersionProcess.on('error', (err) => {
+                console.error(`Failed to start Deno: ${err.message}`);
+                reject(new Error(`Deno is not installed or not accessible at ${DENO_PATH}`));
+            });
+
             denoVersionProcess.on('close', (code) => {
                 if (code !== 0) {
-                    reject(new Error('Failed to verify Deno installation'));
+                    console.error(`Deno version check failed with code ${code}`);
+                    reject(new Error(`Failed to verify Deno installation (exit code: ${code})`));
                 }
+                console.log(`Deno version: ${versionOutput.trim()}`);
                 resolve();
             });
         });
