@@ -15,10 +15,14 @@ async function checkExecutable(path) {
 
 export function getRuntimePaths() {
     if (process.env.NODE_ENV === 'production') {
-        // В production используем глобально установленные пакеты
+        const denoPath = process.env.DENO_INSTALL ? `${process.env.DENO_INSTALL}/bin/deno` : '/root/.deno/bin/deno';
+        const bunPath = process.env.BUN_INSTALL ? `${process.env.BUN_INSTALL}/bin/bun` : '/root/.bun/bin/bun';
+
+        console.log('Runtime paths in production:', { denoPath, bunPath });
+
         return {
-            deno: 'deno',
-            bun: 'bun'
+            deno: denoPath,
+            bun: bunPath
         };
     }
 
