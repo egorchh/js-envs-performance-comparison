@@ -4,6 +4,13 @@ import { file } from 'tmp-promise';
 import { writeFile } from 'fs/promises';
 
 export function getRuntimePaths() {
+    if (process.env.NODE_ENV === 'production') {
+        return {
+            deno: process.env.DENO_PATH || 'deno',
+            bun: process.env.BUN_PATH || 'bun'
+        };
+    }
+
     return {
         deno: join(homedir(), '.deno', 'bin', 'deno'),
         bun: join(homedir(), '.bun', 'bin', 'bun')

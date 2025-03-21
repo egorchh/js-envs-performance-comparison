@@ -6,6 +6,20 @@ export async function runInBun(code, timeout) {
     const { bun: BUN_PATH } = getRuntimePaths();
 
     try {
+        // Проверяем наличие Bun
+        const bunVersionProcess = spawn(BUN_PATH, ['--version']);
+        await new Promise((resolve, reject) => {
+            bunVersionProcess.on('error', () => {
+                reject(new Error('Bun is not installed or not accessible'));
+            });
+            bunVersionProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error('Failed to verify Bun installation'));
+                }
+                resolve();
+            });
+        });
+
         const startTime = performance.now();
         const bunProcess = spawn(BUN_PATH, ['run', path], {
             timeout,

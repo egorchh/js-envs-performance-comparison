@@ -6,6 +6,20 @@ export async function runInDeno(code, timeout) {
     const { deno: DENO_PATH } = getRuntimePaths();
 
     try {
+        // Проверяем наличие Deno
+        const denoVersionProcess = spawn(DENO_PATH, ['--version']);
+        await new Promise((resolve, reject) => {
+            denoVersionProcess.on('error', () => {
+                reject(new Error('Deno is not installed or not accessible'));
+            });
+            denoVersionProcess.on('close', (code) => {
+                if (code !== 0) {
+                    reject(new Error('Failed to verify Deno installation'));
+                }
+                resolve();
+            });
+        });
+
         const startTime = performance.now();
         const denoProcess = spawn(DENO_PATH, ['run', '--no-check', path], {
             timeout,
