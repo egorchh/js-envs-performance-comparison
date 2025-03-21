@@ -1,31 +1,20 @@
 FROM node:20-slim
 
-WORKDIR /app
-
 # Установка необходимых зависимостей
 RUN apt-get update && apt-get install -y curl unzip
 
-# Создаем пользователя
-RUN useradd -m appuser
+# Устанавливаем Deno
+RUN curl -fsSL https://deno.land/x/install/install.sh | sh
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="$DENO_INSTALL/bin:$PATH"
 
-# Создаем директории для Deno и Bun
-RUN mkdir -p /app/.deno /app/.bun
+# Устанавливаем Bun
+RUN curl -fsSL https://bun.sh/install | bash
+ENV BUN_INSTALL="/root/.bun"
+ENV PATH="$BUN_INSTALL/bin:$PATH"
 
-# Установка Deno
-ENV DENO_INSTALL="/app/.deno"
-RUN curl -fsSL https://deno.land/x/install/install.sh | DENO_INSTALL=/app/.deno sh
-ENV PATH="/app/.deno/bin:${PATH}"
-
-# Установка Bun
-ENV BUN_INSTALL="/app/.bun"
-RUN curl -fsSL https://bun.sh/install | BUN_INSTALL=/app/.bun bash
-ENV PATH="/app/.bun/bin:${PATH}"
-
-# Устанавливаем правильные права доступа
-RUN chmod +x /app/.deno/bin/deno && chmod +x /app/.bun/bin/bun
-
-# Проверяем установку
-RUN deno --version && bun --version
+# Создаем рабочую директорию
+WORKDIR /app
 
 # Копируем файлы package.json
 COPY package.json ./
