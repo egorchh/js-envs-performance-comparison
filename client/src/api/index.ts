@@ -24,7 +24,7 @@ export const runCodeAsync = async (
             }),
         });
 
-        if (!response.ok) {
+        if (!response.ok || response.status !== 200) {
             const errorData = await response.json().catch(() => ({}));
             throw new Error(errorData.error || `HTTP error! status: ${response.status}`);
         }

@@ -17,7 +17,7 @@ import {
     PresetSelect
 } from '../components';
 import { RUN_CODE_FAILED_REQUEST, RUN_CODE_FATAL_CODE_ERROR } from '../constants';
-import { RunCodeResponseDto, Settings } from '../types';
+import { EnvironmentData, RunCodeResponseDto, Settings } from '../types';
 import { runCodeAsync } from '../api';
 import './styles.css';
 
@@ -43,7 +43,7 @@ const AppContent = () => {
     const [code, setCode] = useState<string | undefined>(
         '// Введите ваш JavaScript код здесь или воспользуйтесь заготовками\nconsole.log("Hello, World!");'
     );
-    const [results, setResults] = useState<RunCodeResponseDto | null>(null);
+    const [results, setResults] = useState<EnvironmentData | null>(null);
     const [settings, setSettings] = useState<Settings>({
         timeout: 5000,
         runs: 3,
@@ -57,14 +57,19 @@ const AppContent = () => {
 
     const handleRunCode = () => {
         runCodeAsync({ code, settings })
-            .then((data) => {
-                const hasError = Object.values(data).some((env) => env.error);
+            .then((response) => {
+                if (response.status !== 'success') {
+                    toast.error(RUN_CODE_FAILED_REQUEST);
+                    return;
+                }
 
-                if (hasError) {
+                const hasErrorEnvironmentError = Object.values(response.data).some((env) => env.error);
+
+                if (hasErrorEnvironmentError) {
                     toast.error(RUN_CODE_FATAL_CODE_ERROR);
                 }
 
-                setResults(data);
+                setResults(response.data);
             })
             .catch(() => {
                 toast.error(RUN_CODE_FAILED_REQUEST);
@@ -103,7 +108,7 @@ const AppContent = () => {
                             onRun={handleRunCode}
                         />
                         {results && (
-                            <ResultsView results={results} />
+                            <ResultsView settings={settings} results={results} />
                         )}
                     </Box>
                 </Box>

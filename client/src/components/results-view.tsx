@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { Paper, Typography, Box, useTheme, useMediaQuery } from '@mui/material';
 import { Bar } from 'react-chartjs-2';
 import {
@@ -11,7 +12,7 @@ import {
 } from 'chart.js';
 import { resultViewBarOptions } from '../constants';
 import { ResultError } from './result-error';
-import {RunCodeResponseDto} from "../types";
+import { EnvironmentData, Settings } from "../types";
 
 ChartJS.register(
     CategoryScale,
@@ -23,18 +24,19 @@ ChartJS.register(
 );
 
 type Props = {
-    results: RunCodeResponseDto;
+    results: EnvironmentData;
+    settings: Settings;
 };
 
-export const ResultsView = ({ results }: Props) => {
+export const ResultsView = ({ results, settings }: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
-    const chartData = {
+    const chartData = useMemo(() => ({
         labels: Object.keys(results),
         datasets: [
             {
-                label: 'Среднее время выполнения (мс)',
+                label: `${settings.mode === 'average' ? 'Ср. время' : 'Время'} выполнения (мс)`,
                 data: Object.values(results).map(r => r.averageTime || r.executionTime),
                 backgroundColor: [
                     'rgba(54, 162, 235, 0.6)',
@@ -49,9 +51,9 @@ export const ResultsView = ({ results }: Props) => {
                 borderWidth: 1,
             },
         ],
-    };
+    }), [results, settings.mode]);
 
-    const chartOptions = {
+    const chartOptions = useMemo(() => ({
         ...resultViewBarOptions,
         plugins: {
             ...resultViewBarOptions.plugins,
@@ -71,7 +73,7 @@ export const ResultsView = ({ results }: Props) => {
                 }
             }
         }
-    };
+    }), [isMobile]);
 
     return (
         <Paper sx={{
@@ -119,11 +121,11 @@ export const ResultsView = ({ results }: Props) => {
                             }
                         }}
                     >
-                        Среднее время выполнения: {result.averageTime || result.executionTime} мс
+                        {settings.mode === 'average' ? 'Среднее время' : 'Время'} выполнения: {result.averageTime || result.executionTime} (мс)
                         {result.totalTime && (
                             <>
                                 <br />
-                                Общее время: {result.totalTime} мс
+                                Общее время: {result.totalTime} (мс)
                             </>
                         )}
                     </Typography>

@@ -17,4 +17,13 @@ export type EnvResponseDto = {
     totalTime?: number | undefined;
 }
 
-export type RunCodeResponseDto = Record<'node' | 'deno' | 'bun', EnvResponseDto>;
+export type EnvironmentData = {
+    node: EnvResponseDto;
+    deno: EnvResponseDto;
+    bun: EnvResponseDto;
+};
+
+export type RunCodeResponseDto = {
+    status: string;
+    data: EnvironmentData;
+};
