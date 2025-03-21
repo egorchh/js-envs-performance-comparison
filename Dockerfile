@@ -5,6 +5,9 @@ WORKDIR /app
 # Установка необходимых зависимостей
 RUN apt-get update && apt-get install -y curl unzip
 
+# Создаем пользователя
+RUN useradd -m appuser
+
 # Создаем директории для Deno и Bun
 RUN mkdir -p /app/.deno /app/.bun
 
@@ -19,8 +22,7 @@ RUN curl -fsSL https://bun.sh/install | BUN_INSTALL=/app/.bun bash
 ENV PATH="/app/.bun/bin:${PATH}"
 
 # Устанавливаем правильные права доступа
-RUN chmod -R 755 /app/.deno /app/.bun \
-    && chown -R 1000:1000 /app/.deno /app/.bun
+RUN chmod +x /app/.deno/bin/deno && chmod +x /app/.bun/bin/bun
 
 # Проверяем установку
 RUN deno --version && bun --version
@@ -30,8 +32,8 @@ COPY package.json ./
 COPY server/package.json ./server/
 
 # Устанавливаем зависимости
-RUN npm ci
-RUN cd server && npm ci
+RUN npm i
+RUN cd server && npm i
 
 # Копируем исходный код
 COPY . .
@@ -40,4 +42,4 @@ COPY . .
 ENV PORT=3000
 
 # Запускаем приложение
-CMD ["npm", "start"] 
+CMD ["npm", "start"]
