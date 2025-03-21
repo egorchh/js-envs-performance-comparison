@@ -1,18 +1,32 @@
 import { homedir } from 'os';
 import { join } from 'path';
 import { file } from 'tmp-promise';
-import { writeFile } from 'fs/promises';
+import { writeFile, access, constants } from 'fs/promises';
+
+async function checkExecutable(path) {
+    try {
+        await access(path, constants.X_OK);
+        return true;
+    } catch (error) {
+        console.error(`File ${path} is not executable:`, error.message);
+        return false;
+    }
+}
 
 export function getRuntimePaths() {
     if (process.env.NODE_ENV === 'production') {
-        if (!process.env.DENO_PATH || !process.env.BUN_PATH) {
-            console.warn('DENO_PATH or BUN_PATH environment variables are not set');
-        }
+        const deno = process.env.DENO_PATH || '/app/.deno/bin/deno';
+        const bun = process.env.BUN_PATH || '/app/.bun/bin/bun';
 
-        return {
-            deno: process.env.DENO_PATH || '/app/.deno/bin/deno',
-            bun: process.env.BUN_PATH || '/app/.bun/bin/bun'
-        };
+        // Логируем пути и переменные окружения для диагностики
+        console.log('Environment:', {
+            NODE_ENV: process.env.NODE_ENV,
+            DENO_PATH: process.env.DENO_PATH,
+            BUN_PATH: process.env.BUN_PATH,
+            PATH: process.env.PATH
+        });
+
+        return { deno, bun };
     }
 
     return {
@@ -48,3 +62,6 @@ export async function runMultipleTimes(runner, code, timeout, runs) {
         totalTime: results.reduce((a, b) => a + b, 0),
     };
 }
+
+// Экспортируем функцию для использования в runners
+export { checkExecutable };

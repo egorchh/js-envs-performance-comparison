@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { createTempFile, getRuntimePaths } from '../utils/index.js';
+import { createTempFile, getRuntimePaths, checkExecutable } from '../utils/index.js';
 
 export async function runInBun(code, timeout) {
     const { path, cleanup } = await createTempFile(code);
@@ -8,6 +8,12 @@ export async function runInBun(code, timeout) {
     console.log(`Attempting to run Bun at path: ${BUN_PATH}`);
 
     try {
+        // Проверяем доступность файла
+        const isExecutable = await checkExecutable(BUN_PATH);
+        if (!isExecutable) {
+            throw new Error(`Bun binary at ${BUN_PATH} is not executable`);
+        }
+
         // Проверяем наличие Bun
         const bunVersionProcess = spawn(BUN_PATH, ['--version']);
         await new Promise((resolve, reject) => {

@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { createTempFile, getRuntimePaths } from '../utils/index.js';
+import { createTempFile, getRuntimePaths, checkExecutable } from '../utils/index.js';
 
 export async function runInDeno(code, timeout) {
     const { path, cleanup } = await createTempFile(code);
@@ -8,6 +8,12 @@ export async function runInDeno(code, timeout) {
     console.log(`Attempting to run Deno at path: ${DENO_PATH}`);
 
     try {
+        // Проверяем доступность файла
+        const isExecutable = await checkExecutable(DENO_PATH);
+        if (!isExecutable) {
+            throw new Error(`Deno binary at ${DENO_PATH} is not executable`);
+        }
+
         // Проверяем наличие Deno
         const denoVersionProcess = spawn(DENO_PATH, ['--version']);
         await new Promise((resolve, reject) => {
