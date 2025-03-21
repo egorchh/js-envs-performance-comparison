@@ -15,18 +15,11 @@ async function checkExecutable(path) {
 
 export function getRuntimePaths() {
     if (process.env.NODE_ENV === 'production') {
-        const deno = process.env.DENO_PATH || '/app/.deno/bin/deno';
-        const bun = process.env.BUN_PATH || '/app/.bun/bin/bun';
-
-        // Логируем пути и переменные окружения для диагностики
-        console.log('Environment:', {
-            NODE_ENV: process.env.NODE_ENV,
-            DENO_PATH: process.env.DENO_PATH,
-            BUN_PATH: process.env.BUN_PATH,
-            PATH: process.env.PATH
-        });
-
-        return { deno, bun };
+        // В production используем глобально установленные пакеты
+        return {
+            deno: 'deno',
+            bun: 'bun'
+        };
     }
 
     return {

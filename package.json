@@ -6,6 +6,11 @@
     },
     "scripts": {
         "start": "cd server && npm start",
-        "build": "cd server && npm ci"
+        "build": "cd server && npm ci",
+        "postinstall": "npm install -g bun && npm install -g deno"
+    },
+    "dependencies": {
+        "bun": "^1.0.30",
+        "deno": "^0.1.1"
     }
 }
