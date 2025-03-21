@@ -66,7 +66,7 @@ console.log(isPrime(5600748293801));
 const promiseHandlingCodeSnippet =
 `
 async function testPromises() {
-\tfor (let i = 0; i < 1_000_000; i++) {
+\tfor (let i = 0; i < 1000; i++) {
 \t\tawait new Promise(resolve => setTimeout(resolve, 0));
 \t}
 \tconsole.log('Done');

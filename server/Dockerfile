@@ -1,12 +1,28 @@
-FROM node:18-alpine
+FROM node:20-slim
+
+RUN apt-get update && apt-get install -y curl unzip
+
+RUN curl -fsSL https://deno.land/x/install/install.sh | sh
+ENV DENO_INSTALL="/root/.deno"
+ENV PATH="$DENO_INSTALL/bin:$PATH"
+
+RUN curl -fsSL https://bun.sh/install | bash
+ENV BUN_INSTALL="/root/.bun"
+ENV PATH="$BUN_INSTALL/bin:$PATH"
 
 WORKDIR /app
 
-COPY package*.json ./
-RUN npm install
+# Копируем файлы package.json
+COPY package.json ./
 
+# Устанавливаем зависимости
+RUN npm i
+
+# Копируем исходный код
 COPY . .
 
-EXPOSE 3000
+# Указываем порт
+ENV PORT=3000
 
-CMD ["npm", "start"] 
+# Запускаем приложение
+CMD ["npm", "start"]
