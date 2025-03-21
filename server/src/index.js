@@ -3,78 +3,54 @@ import cors from 'cors';
 import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
-import { runInEnvironments } from './runners/index.js';
+import { config } from './config/index.js';
+import { errorHandler } from './middleware/error.middleware.js';
+import codeRoutes from './routes/code.routes.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 
 const app = express();
-const port = process.env.PORT || 3000;
 
-app.use(cors({
-    origin: [
-        'https://egorchh.github.io',
-        'http://localhost:5173',
-        'https://js-envs-performance-comparison-8cefb3e43324.herokuapp.com'
-    ],
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-    credentials: true
-}));
-app.use(express.json());
-app.use(morgan('dev'));
+app.use(cors(config.cors));
+app.use(express.json({ limit: '10kb' }));
+app.use(morgan(config.nodeEnv === 'development' ? 'dev' : 'combined'));
 
 app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok' });
 });
 
-if (process.env.NODE_ENV === 'production') {
+app.use('/api', codeRoutes);
+
+if (config.nodeEnv === 'production') {
     const clientBuildPath = join(__dirname, '../../client/dist');
-    app.use(express.static(clientBuildPath, {
-        fallthrough: false,
-        setHeaders: (res, path) => {
-            if (path.endsWith('.html')) {
-                res.setHeader('Cache-Control', 'no-cache');
-            }
-        }
-    }));
+    app.use(express.static(clientBuildPath));
 
-    app.use((err, req, res, next) => {
-        if (err.status === 404) {
-            res.sendFile(join(__dirname, '../../client/dist/index.html'));
-        } else {
-            next(err);
-        }
-    });
-}
-
-app.post('/api/run', async (req, res) => {
-    try {
-        const { code, settings } = req.body;
-
-        if (!code) {
-            return res.status(400).json({ error: 'Code is required' });
-        }
-
-        const results = await runInEnvironments(code, settings);
-        res.json(results);
-    } catch ({ message }) {
-        console.error('Error running code:', message);
-        res.status(500).json({ error: message });
-    }
-});
-
-if (process.env.NODE_ENV === 'production') {
     app.get('*', (req, res) => {
-        res.sendFile(join(__dirname, '../../client/dist/index.html'));
+        res.sendFile(join(clientBuildPath, 'index.html'));
     });
 }
 
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).json({ error: 'Something went wrong!' });
+app.use(errorHandler);
+
+app.all('*', (req, res, next) => {
+    next(new Error(`Can't find ${req.originalUrl} on this server!`));
 });
 
-app.listen(port, () => {
-    console.log(`Server is running on port ${port}`);
-    console.log(`Environment: ${process.env.NODE_ENV || 'development'}`);
+const server = app.listen(config.port, () => {
+    console.log(`Server running in ${config.nodeEnv} mode on port ${config.port}`);
+});
+
+process.on('unhandledRejection', (err) => {
+    console.error('UNHANDLED REJECTION! 💥 Shutting down...');
+    console.error(err.name, err.message);
+    server.close(() => {
+        process.exit(1);
+    });
+});
+
+process.on('uncaughtException', (err) => {
+    console.error('UNCAUGHT EXCEPTION! 💥 Shutting down...');
+    console.error(err.name, err.message);
+    process.exit(1);
 }); 
