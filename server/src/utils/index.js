@@ -15,10 +15,16 @@ async function checkExecutable(path) {
 
 export function getRuntimePaths() {
     if (process.env.NODE_ENV === 'production') {
-        const denoPath = process.env.DENO_INSTALL ? `${process.env.DENO_INSTALL}/bin/deno` : '/root/.deno/bin/deno';
-        const bunPath = process.env.BUN_INSTALL ? `${process.env.BUN_INSTALL}/bin/bun` : '/root/.bun/bin/bun';
+        const denoPath = process.env.DENO_INSTALL ? `${process.env.DENO_INSTALL}/bin/deno` : '/app/.deno/bin/deno';
+        const bunPath = process.env.BUN_INSTALL ? `${process.env.BUN_INSTALL}/bin/bun` : '/app/.bun/bin/bun';
 
-        console.log('Runtime paths in production:', { denoPath, bunPath });
+        console.log('Runtime paths in production:', {
+            denoPath,
+            bunPath,
+            uid: process.getuid?.() || 'N/A',
+            gid: process.getgid?.() || 'N/A',
+            cwd: process.cwd()
+        });
 
         return {
             deno: denoPath,
