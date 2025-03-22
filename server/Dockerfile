@@ -16,17 +16,26 @@ ENV PATH="$BUN_INSTALL/bin:$PATH"
 # Создаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы package.json
-COPY package.json ./
+# Копируем файлы package*.json для установки зависимостей
+COPY package*.json ./
+COPY package-lock.json ./
 
-# Устанавливаем зависимости
+# Устанавливаем зависимости с использованием npm ci для воспроизводимой сборки
 RUN npm i
+RUN cd .. && npm i
 
 # Копируем исходный код
 COPY . .
+COPY .. ..
 
 # Указываем порт
 ENV PORT=3000
+EXPOSE 3000
+
+# Проверяем наличие необходимых файлов и директорий
+RUN ls -la
+RUN echo "Current directory:" && pwd
+RUN echo "Contents of src:" && ls -la src
 
 # Запускаем приложение
 CMD ["npm", "start"]

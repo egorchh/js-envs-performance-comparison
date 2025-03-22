@@ -2,4 +2,4 @@ build:
   docker:
     web: server/Dockerfile
 run:
-  web: cd server && npm start
+  web: npm start
