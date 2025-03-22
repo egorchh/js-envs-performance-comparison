@@ -18,15 +18,12 @@ WORKDIR /app
 
 # Копируем файлы package*.json для установки зависимостей
 COPY package*.json ./
-COPY package-lock.json ./
 
 # Устанавливаем зависимости с использованием npm ci для воспроизводимой сборки
-RUN npm i
-RUN cd .. && npm i
+RUN npm ci
 
 # Копируем исходный код
 COPY . .
-COPY .. ..
 
 # Указываем порт
 ENV PORT=3000
