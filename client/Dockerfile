@@ -1,32 +1,24 @@
-# Этап сборки
-FROM node:20-slim as build
+FROM node:18.19-alpine3.19 as builder
 
-# Создаем рабочую директорию
 WORKDIR /app
 
-# Копируем файлы package.json и package-lock.json
 COPY package*.json ./
 
-# Устанавливаем зависимости
 RUN npm ci
 
-# Копируем исходный код
+ARG VITE_API_URL
+ENV VITE_API_URL=${VITE_API_URL}
+
 COPY . .
 
-# Собираем приложение
 RUN npm run build
 
-# Этап production
-FROM nginx:alpine
+FROM nginx:1.25.4-alpine
 
-# Копируем собранное приложение из этапа сборки
-COPY --from=build /app/dist /usr/share/nginx/html
-
-# Копируем конфигурацию nginx
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-# Указываем порт
-EXPOSE 80
+COPY --from=builder /app/dist /usr/share/nginx/html
 
-# Запускаем nginx
+EXPOSE 3000
+
 CMD ["nginx", "-g", "daemon off;"]

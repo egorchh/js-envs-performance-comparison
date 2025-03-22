@@ -20,14 +20,15 @@ WORKDIR /app
 COPY package*.json ./
 
 # Устанавливаем зависимости с использованием npm ci для воспроизводимой сборки
-RUN npm ci
+RUN npm ci --only=production
 
 # Копируем исходный код
 COPY . .
 
-# Указываем порт
-ENV PORT=3000
-EXPOSE 3000
+ENV PORT=5555
+ENV NODE_ENV=production
+
+EXPOSE 5555
 
 # Проверяем наличие необходимых файлов и директорий
 RUN ls -la
