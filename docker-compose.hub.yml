@@ -1,0 +1,31 @@
+version: '3.8'
+
+services:
+  server:
+    image: egorchh/js-envs-performance-comparison-server:latest
+    container_name: js-envs-performance-comparison-server
+    restart: unless-stopped
+    environment:
+      - NODE_ENV=production
+      - PORT=5555
+    volumes:
+      - ./server/data:/app/data
+    networks:
+      - app-network
+    ports:
+      - "5555:5555"
+
+  client:
+    image: egorchh/js-envs-performance-comparison-client:latest
+    container_name: js-envs-performance-comparison-client
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    depends_on:
+      - server
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
