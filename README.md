@@ -2,6 +2,20 @@
 
 Проект для сравнения производительности сред исполнения серверного JavaScript кода: NodeJS, Deno, Bun.
 
+#### Desktop версия
+
+<img width="1501" alt="Screenshot 2025-03-22 at 17 44 26" src="https://github.com/user-attachments/assets/3f053bd2-cce6-48f3-9d85-5094583b574b" />
+<img width="495" alt="Screenshot 2025-03-22 at 17 44 34" src="https://github.com/user-attachments/assets/a85a2b7b-a06f-4777-b462-c607bc631036" />
+
+#### Mobile версия
+
+<img width="411" alt="Screenshot 2025-03-22 at 17 55 34" src="https://github.com/user-attachments/assets/c32bc85c-0c93-4990-a8a4-1e695de13f45" />
+<img width="415" alt="Screenshot 2025-03-22 at 17 56 33" src="https://github.com/user-attachments/assets/abb68477-0b21-4265-ae99-4abc5a53f371" />
+
+#### Обработка ошибок
+
+<img width="411" alt="Screenshot 2025-03-22 at 17 55 50" src="https://github.com/user-attachments/assets/7aab89e1-9f6a-444a-887a-fec9ecda56b6" />
+
 ## 🚀 Локальная разработка
 
 ### Клиентская часть
