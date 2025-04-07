@@ -3,10 +3,15 @@ FROM node:20-slim
 # Установка необходимых зависимостей
 RUN apt-get update && apt-get install -y curl unzip
 
-# Устанавливаем Deno
+# Устанавливаем Deno и предварительно кэшируем стандартные модули
 RUN curl -fsSL https://deno.land/x/install/install.sh | sh
 ENV DENO_INSTALL="/root/.deno"
 ENV PATH="$DENO_INSTALL/bin:$PATH"
+
+# Предварительно кэшируем часто используемые модули Deno
+RUN deno cache --no-check https://deno.land/std/http/mod.ts
+RUN deno cache --no-check https://deno.land/std/fs/mod.ts
+RUN deno cache --no-check https://deno.land/std/path/mod.ts
 
 # Устанавливаем Bun
 RUN curl -fsSL https://bun.sh/install | bash

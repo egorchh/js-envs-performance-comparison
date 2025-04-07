@@ -43,7 +43,14 @@ export async function runInDeno(code, timeout) {
         });
 
         const startTime = performance.now();
-        const denoProcess = spawn(DENO_PATH, ['run', '--no-check', path], {
+        // Флаги для оптимизации производительности:
+        const denoProcess = spawn(DENO_PATH, [
+            'run',
+            '--allow-read', // разрешаем чтение файлов для быстрого доступа
+            '--no-check', // отключаем проверку типов для ускорения
+            '--cached-only', // используем только кэшированные модули, если возможно
+            path
+        ], {
             timeout,
             env: { ...process.env }
         });
