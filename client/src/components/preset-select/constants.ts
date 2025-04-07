@@ -1,7 +1,7 @@
 import { Preset } from './types.ts';
 
 const quickSortCodeSnippet =
-`
+    `
 function quickSort(arr, left = 0, right = arr.length - 1) {
 \tif (left >= right) return;
 \tconst pivotIndex = partition(arr, left, right);
@@ -28,7 +28,7 @@ console.log(arr.slice(0, 10));
 `
 
 const jsonParsingCodeSnippet =
-`
+    `
 const obj = Object.fromEntries(
 \tArray.from({ length: 10000 }, (_, i) => [\`key\${i}\`, { value: i, meta: { flag: true } }])
 );
@@ -39,7 +39,7 @@ console.log(Object.keys(parsedObj).length);
 `
 
 const destructuringCodeSnippet =
-`
+    `
 const obj1 = Object.fromEntries(Array.from({ length: 10000 }, (_, i) => [\`key\${i}\`, i]));
 const obj2 = Object.fromEntries(Array.from({ length: 10000 }, (_, i) => [\`key\${i}\`, i + 1]));
 
@@ -50,7 +50,7 @@ console.log(mergedDestructuring.key5000 === mergedAssign.key5000);
 `
 
 const primeCheckCodeSnippet =
-`
+    `
 function isPrime(n) {
 \tif (n < 2) return false;
 \tif (n % 2 === 0 || n % 3 === 0) return n === 2 || n === 3;
@@ -64,15 +64,14 @@ console.log(isPrime(5600748293801));
 `
 
 const promiseHandlingCodeSnippet =
-`
-async function testPromises() {
-\tfor (let i = 0; i < 1000; i++) {
-\t\tawait new Promise(resolve => setTimeout(resolve, 0));
+    `
+async function asyncArray(n) {
+\tfor (let i = 0; i <= n; i++) {
+\t\tawait new Promise((resolve, reject) => resolve());
 \t}
-\tconsole.log('Done');
-}
+};
 
-testPromises();
+asyncArray(1000);
 `
 
 export const presets: Record<string, Preset> = {

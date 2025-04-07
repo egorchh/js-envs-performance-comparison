@@ -39,6 +39,7 @@ const darkTheme = createTheme({
 const AppContent = () => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+    const [loading, setLoading] = useState<boolean>(false);
 
     const [code, setCode] = useState<string | undefined>(
         '// Введите ваш JavaScript код здесь или воспользуйтесь заготовками\nconsole.log("Hello, World!");'
@@ -56,6 +57,8 @@ const AppContent = () => {
     });
 
     const handleRunCode = () => {
+        setLoading(true);
+
         runCodeAsync({ code, settings })
             .then((response) => {
                 if (response.status !== 'success') {
@@ -73,7 +76,8 @@ const AppContent = () => {
             })
             .catch(() => {
                 toast.error(RUN_CODE_FAILED_REQUEST);
-            });
+            })
+            .finally(() => setLoading(false));
     };
 
     return (
@@ -103,6 +107,7 @@ const AppContent = () => {
                     <Box>
                         <PresetSelect onChange={setCode} />
                         <SettingsPanel
+                            pending={loading}
                             settings={settings}
                             onSettingsChange={setSettings}
                             onRun={handleRunCode}

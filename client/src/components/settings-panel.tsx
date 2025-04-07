@@ -19,11 +19,12 @@ import { Settings } from '../types';
 
 type Props = {
     settings: Settings;
+    pending: boolean;
     onSettingsChange: (settings: Settings) => void;
     onRun: VoidFunction;
 };
 
-export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
+export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Props) => {
     const theme = useTheme();
     const isMobile = useMediaQuery(theme.breakpoints.down('md'));
 
@@ -54,7 +55,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
     const handleRunsChange: TextFieldProps['onChange'] = (event) => {
         onSettingsChange({
             ...settings,
-            runs: Number(event.target.value)
+            runs: Number(event.target.value ?? 0)
         });
     };
 
@@ -121,7 +122,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                     >
                         <MenuItem value="single">Одиночный запуск</MenuItem>
                         <MenuItem value="average">Среднее время</MenuItem>
-                        <MenuItem value="async">Асинхронный</MenuItem>
+                        <MenuItem value="async">Асинхронный (Параллельный запуск сред)</MenuItem>
                     </Select>
                 </FormControl>
 
@@ -143,7 +144,6 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                             Количество запусков
                         </Typography>
                         <TextField
-                            type="number"
                             value={settings.runs}
                             onChange={handleRunsChange}
                             size={isMobile ? "small" : "medium"}
@@ -155,9 +155,10 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun }: Props) => {
                     variant="contained"
                     onClick={onRun}
                     fullWidth
+                    disabled={pending}
                     size={isMobile ? "small" : "medium"}
                 >
-                    Запустить
+                    {pending ? 'Запуск...' : 'Запустить код'}
                 </Button>
             </Stack>
         </Paper>
