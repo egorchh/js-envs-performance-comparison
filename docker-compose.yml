@@ -1,34 +1,50 @@
 version: '3.8'
 
 services:
-  server:
-    build:
-      context: ./server
-      dockerfile: Dockerfile
-    container_name: js-envs-performance-comparison-server
-    restart: unless-stopped
-    environment:
-      - NODE_ENV=production
-      - PORT=5555
-    volumes:
-      - ./server/data:/app/data
+  client:
+    build: 
+      context: ./client
+      args:
+        - VITE_NODE_API_URL=http://node-server:5001
+        - VITE_DENO_API_URL=http://deno-server:5002
+        - VITE_BUN_API_URL=http://bun-server:5003
+    ports:
+      - "3000:80"
+    depends_on:
+      - node-server
+      - deno-server
+      - bun-server
     networks:
       - app-network
-    ports:
-      - "5555:5555"
 
-  client:
-    build:
-      context: ./client
-      dockerfile: Dockerfile
-      args:
-        - VITE_API_URL=http://localhost:5555
-    container_name: js-envs-performance-comparison-client
-    restart: unless-stopped
+  node-server:
+    build: ./node-server
+    container_name: node-server
     ports:
-      - "3000:3000"
-    depends_on:
-      - server
+      - "5001:5001"
+    environment:
+      - PORT=5001
+      - NODE_ENV=production
+    networks:
+      - app-network
+
+  deno-server:
+    build: ./deno-server
+    container_name: deno-server
+    ports:
+      - "5002:5002"
+    environment:
+      - PORT=5002
+    networks:
+      - app-network
+
+  bun-server:
+    build: ./bun-server
+    container_name: bun-server
+    ports:
+      - "5003:5003"
+    environment:
+      - PORT=5003
     networks:
       - app-network
 

@@ -1,0 +1,12 @@
+{
+    "name": "js-envs-performance-comparison-bun-server",
+    "version": "1.0.0",
+    "type": "module",
+    "engines": {
+        "bun": ">=1.0.0"
+    },
+    "scripts": {
+        "start": "bun run index.js",
+        "dev": "bun --watch index.js"
+    }
+}

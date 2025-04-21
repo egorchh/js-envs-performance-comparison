@@ -20,7 +20,7 @@ export const Header = () => {
                         textAlign: { xs: 'center', sm: 'left' }
                     }}
                 >
-                    JavaScript Environments Performance Comparison
+                    Runtimer
                 </Typography>
             </Toolbar>
         </AppBar>
