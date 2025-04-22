@@ -100,7 +100,7 @@ const server = Bun.serve({
             );
         }
 
-        if (url.pathname === '/run' && req.method === 'POST') {
+        if (url.pathname === '/bun-api/run' && req.method === 'POST') {
             try {
                 const { code, timeout = 5000 } = await req.json();
 

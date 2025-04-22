@@ -88,7 +88,7 @@ app.get('/health', (req, res) => {
     res.status(200).json({ status: 'ok', environment: 'node' });
 });
 
-app.post('/run', async (req, res, next) => {
+app.post('/node-api/run', async (req, res, next) => {
     try {
         const { code, timeout = 5000 } = req.body;
 

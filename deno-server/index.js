@@ -73,7 +73,7 @@ router
         ctx.response.status = 200;
         ctx.response.body = { status: "ok", environment: "deno" };
     })
-    .post("/run", async (ctx) => {
+    .post("/deno-api/run", async (ctx) => {
         try {
             const body = await ctx.request.body().value;
             const { code, timeout = 5000 } = body;
