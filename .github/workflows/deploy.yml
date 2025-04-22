@@ -1,0 +1,58 @@
+name: Deploy to Cloud.ru
+
+on:
+  push:
+    branches: [main, master]
+  workflow_dispatch:
+
+jobs:
+  test:
+    name: Run Tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: "npm"
+          cache-dependency-path: "client/package-lock.json"
+
+      - name: Install Dependencies
+        run: |
+          cd client
+          npm ci
+
+      - name: Run Tests
+        run: |
+          cd client
+          npm test
+
+  deploy:
+    name: Deploy to Server
+    needs: test # Это гарантирует, что деплой произойдет только после успешного прохождения тестов
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install SSH key
+        uses: shimataro/ssh-key-action@v2
+        with:
+          key: ${{ secrets.SSH_PRIVATE_KEY }}
+          known_hosts: unnecessary
+          if_key_exists: replace
+
+      - name: Adding Known Hosts
+        run: ssh-keyscan -H ${{ secrets.SERVER_IP }} >> ~/.ssh/known_hosts
+
+      - name: Set API URLs to use proxy
+        run: |
+          sed -i 's/node: isDevelopment.*/node: "\/node-api",/g' client/src/api/index.ts
+          sed -i 's/deno: isDevelopment.*/deno: "\/deno-api",/g' client/src/api/index.ts
+          sed -i 's/bun: isDevelopment.*/bun: "\/bun-api"/g' client/src/api/index.ts
+
+      - name: Deploy to server
+        run: |
+          rsync -avz --delete ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/opt/app/
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /opt/app && docker-compose down && docker-compose up -d --build"
