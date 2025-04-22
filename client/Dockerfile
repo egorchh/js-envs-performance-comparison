@@ -7,9 +7,9 @@ RUN npm ci
 
 COPY . .
 
-ARG VITE_NODE_API_URL=/node-api
-ARG VITE_DENO_API_URL=/deno-api
-ARG VITE_BUN_API_URL=/bun-api
+ARG VITE_NODE_API_URL=http://runtimer.ru/node-api
+ARG VITE_DENO_API_URL=http://runtimer.ru/deno-api
+ARG VITE_BUN_API_URL=http://runtimer.ru/bun-api
 
 ENV VITE_NODE_API_URL=${VITE_NODE_API_URL}
 ENV VITE_DENO_API_URL=${VITE_DENO_API_URL}

@@ -5,9 +5,9 @@ services:
     build: 
       context: ./client
       args:
-        - VITE_NODE_API_URL=http://node-server:5001
-        - VITE_DENO_API_URL=http://deno-server:5002
-        - VITE_BUN_API_URL=http://bun-server:5003
+        - VITE_NODE_API_URL=http://runtimer.ru/node-api
+        - VITE_DENO_API_URL=http://runtimer.ru/deno-api
+        - VITE_BUN_API_URL=http://runtimer.ru/bun-api
     ports:
       - "3000:80"
     depends_on:
