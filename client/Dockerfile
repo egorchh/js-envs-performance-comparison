@@ -7,9 +7,9 @@ RUN npm ci
 
 COPY . .
 
-ARG VITE_NODE_API_URL=http://runtimer.ru/node-api
-ARG VITE_DENO_API_URL=http://runtimer.ru/deno-api
-ARG VITE_BUN_API_URL=http://runtimer.ru/bun-api
+ARG VITE_NODE_API_URL=https://runtimer.ru/node-api
+ARG VITE_DENO_API_URL=https://runtimer.ru/deno-api
+ARG VITE_BUN_API_URL=https://runtimer.ru/bun-api
 
 ENV VITE_NODE_API_URL=${VITE_NODE_API_URL}
 ENV VITE_DENO_API_URL=${VITE_DENO_API_URL}
@@ -28,6 +28,6 @@ RUN rm -rf /usr/share/nginx/html/*
 COPY --from=build /app/dist/ /usr/share/nginx/html/
 COPY nginx.conf /etc/nginx/conf.d/default.conf
 
-EXPOSE 80
+EXPOSE 443
 
 CMD ["nginx", "-g", "daemon off;"]

@@ -5,11 +5,11 @@ services:
     build: 
       context: ./client
       args:
-        - VITE_NODE_API_URL=http://runtimer.ru/node-api
-        - VITE_DENO_API_URL=http://runtimer.ru/deno-api
-        - VITE_BUN_API_URL=http://runtimer.ru/bun-api
+        - VITE_NODE_API_URL=https://runtimer.ru/node-api
+        - VITE_DENO_API_URL=https://runtimer.ru/deno-api
+        - VITE_BUN_API_URL=https://runtimer.ru/bun-api
     ports:
-      - "3000:80"
+      - "3000:443"
     depends_on:
       - node-server
       - deno-server
