@@ -1,14 +1,12 @@
 import { isDevelopment } from '../constants';
 import { EnvironmentData, RunCodeResponseDto, Settings } from '../types';
 
-// URL для серверов в разных средах
 const API_URLS = {
     node: isDevelopment ? 'http://localhost:5001' : ((import.meta as any).env?.VITE_NODE_API_URL || '/node-api'),
     deno: isDevelopment ? 'http://localhost:5002' : ((import.meta as any).env?.VITE_DENO_API_URL || '/deno-api'),
     bun: isDevelopment ? 'http://localhost:5003' : ((import.meta as any).env?.VITE_BUN_API_URL || '/bun-api')
 };
 
-// Функция для выполнения запроса к одному серверу
 const runCodeInEnvironment = async (
     environment: 'node' | 'deno' | 'bun',
     code: string,
@@ -46,7 +44,6 @@ const runCodeInEnvironment = async (
     }
 };
 
-// Основная функция для запуска кода во всех выбранных средах
 export const runCodeAsync = async (
     {
         code,
@@ -61,15 +58,12 @@ export const runCodeAsync = async (
             .filter(([_, isEnabled]) => isEnabled)
             .map(([env]) => env as keyof EnvironmentData);
 
-        // Создаем массив промисов для всех выбранных сред
         const promises = environments.map(env => 
             runCodeInEnvironment(env, code || '', settings.timeout)
         );
 
-        // Ожидаем выполнения всех промисов
         const results = await Promise.all(promises);
 
-        // Формируем результат
         const resultData = environments.reduce((acc, env, index) => {
             const result = results[index];
             

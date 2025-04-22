@@ -5,7 +5,6 @@ const app = new Application();
 const router = new Router();
 const PORT = Deno.env.get("PORT") || "5002";
 
-// Создание временного файла с кодом
 async function createTempFile(code) {
     const tempDir = await Deno.makeTempDir();
     const filePath = `${tempDir}/temp.js`;
@@ -23,7 +22,6 @@ async function createTempFile(code) {
     };
 }
 
-// Запуск кода в Deno
 async function runInDeno(code, timeout) {
     const { path, cleanup } = await createTempFile(code);
 
@@ -39,9 +37,7 @@ async function runInDeno(code, timeout) {
         const timeoutId = setTimeout(() => {
             try {
                 Deno.kill(process.pid, "SIGTERM");
-            } catch (e) {
-                // Ignore kill errors
-            }
+            } catch (e) { }
         }, timeout);
 
         const { stdout, stderr, code: exitCode } = await process.output();
@@ -72,7 +68,6 @@ async function runInDeno(code, timeout) {
     }
 }
 
-// Роуты
 router
     .get("/health", (ctx) => {
         ctx.response.status = 200;
@@ -108,7 +103,6 @@ router
         }
     });
 
-// Middleware
 app.use(oakCors());
 app.use(async (ctx, next) => {
     console.log(`${ctx.request.method} ${ctx.request.url.pathname}`);

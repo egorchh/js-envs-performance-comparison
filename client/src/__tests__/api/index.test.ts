@@ -1,7 +1,6 @@
 import { runCodeAsync } from '../../api';
 import { Settings } from '../../types';
 
-// Автоматически используем мок из __mocks__/api.ts
 jest.mock('../../api');
 
 describe('API module', () => {

@@ -1,4 +1,3 @@
-import React from 'react';
 import { EnvironmentData, Settings } from '../../types';
 
 export const ResultsView = ({

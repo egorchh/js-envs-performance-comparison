@@ -1,8 +1,6 @@
-import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import * as api from '../../api';
 
-// Мокаем импорт App
 jest.mock('../../app', () => ({
     App: () => {
         const handleRunCode = () => {
@@ -31,10 +29,8 @@ jest.mock('../../app', () => ({
     }
 }));
 
-// Мок для API
 jest.mock('../../api');
 
-// Импортируем App после моков
 import { App } from '../../app';
 
 describe('App Component', () => {
@@ -45,18 +41,14 @@ describe('App Component', () => {
     test('renders header, settings panel, code editor, and results view components', () => {
         render(<App />);
 
-        // Проверяем наличие заголовка
         expect(screen.getByText(/Runtimer/i)).toBeInTheDocument();
 
-        // Проверяем наличие панели настроек
         expect(screen.getByText(/Настройки/i)).toBeInTheDocument();
 
-        // Проверяем наличие кнопки запуска
         expect(screen.getByText(/Запустить код/i)).toBeInTheDocument();
     });
 
     test('clicking run button calls runCodeAsync', async () => {
-        // Мокаем успешный ответ API
         (api.runCodeAsync as jest.Mock).mockResolvedValue({
             status: 'success',
             data: {
@@ -77,11 +69,9 @@ describe('App Component', () => {
 
         render(<App />);
 
-        // Находим и нажимаем кнопку запуска
         const runButton = screen.getByText(/Запустить код/i);
         fireEvent.click(runButton);
 
-        // Проверяем, что API был вызван с правильными параметрами
         await waitFor(() => {
             expect(api.runCodeAsync).toHaveBeenCalledTimes(1);
             expect(api.runCodeAsync).toHaveBeenCalledWith(expect.objectContaining({

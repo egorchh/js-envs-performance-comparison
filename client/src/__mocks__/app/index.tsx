@@ -1,7 +1,6 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Settings, EnvironmentData } from '../../types';
 
-// Мок для App компонента
 export const App = () => {
     const [settings, setSettings] = useState<Settings>({
         timeout: 5000,

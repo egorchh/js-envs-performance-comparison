@@ -1,17 +1,14 @@
 import '@testing-library/jest-dom';
 
-// Мок для Monaco Editor
 jest.mock('@monaco-editor/react', () => ({
   __esModule: true,
   default: jest.fn(() => null),
 }));
 
-// Мок для Chart.js
 jest.mock('react-chartjs-2', () => ({
   Bar: () => null,
 }));
 
-// Мок для react-hot-toast
 jest.mock('react-hot-toast', () => ({
   toast: {
     error: jest.fn(),
@@ -20,7 +17,8 @@ jest.mock('react-hot-toast', () => ({
   Toaster: jest.fn().mockImplementation(() => null),
 }));
 
-// Мок для import.meta.env
+// eslint-disable-next-line
+// @ts-ignore
 global.import = {
   meta: {
     env: {
@@ -33,12 +31,12 @@ global.import = {
   },
 } as any;
 
-// Переопределение import.meta для прямого использования в коде
 Object.defineProperty(globalThis, 'import', {
+  // eslint-disable-next-line
+  // @ts-ignore
   value: global.import
 });
 
-// Мок для fetch API
 global.fetch = jest.fn(() =>
   Promise.resolve({
     ok: true,
@@ -46,7 +44,6 @@ global.fetch = jest.fn(() =>
   })
 ) as jest.Mock;
 
-// Мок для API
 jest.mock('./api', () => ({
   runCodeAsync: jest.fn().mockImplementation(async () => {
     return {
