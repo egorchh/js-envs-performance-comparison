@@ -54,4 +54,4 @@ jobs:
 
       - name: Deploy to server
         run: |
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "docker compose down && git pull && docker compose up -d --build"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd js-envs-performance-comparison && docker compose down && git pull && docker compose up -d --build"
