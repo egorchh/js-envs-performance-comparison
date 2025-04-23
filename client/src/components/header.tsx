@@ -20,7 +20,7 @@ export const Header = () => {
                         textAlign: { xs: 'center', sm: 'left' }
                     }}
                 >
-                    Runtimer
+                    Runtimer ;^)
                 </Typography>
             </Toolbar>
         </AppBar>
