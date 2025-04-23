@@ -12,7 +12,8 @@ const runCodeInEnvironment = async (
     code: string,
     timeout: number,
     mode: 'single' | 'average' | 'async',
-    runs: number
+    runs: number,
+    commonTimeout?: number
 ): Promise<{
     status: string;
     data?: any;
@@ -29,7 +30,8 @@ const runCodeInEnvironment = async (
                 code,
                 timeout,
                 mode,
-                runs
+                runs,
+                commonTimeout
             }),
         });
 
@@ -63,7 +65,7 @@ export const runCodeAsync = async (
             .map(([env]) => env as keyof EnvironmentData);
 
         const promises = environments.map(env => 
-            runCodeInEnvironment(env, code || '', settings.timeout, settings.mode, settings.runs)
+            runCodeInEnvironment(env, code || '', settings.timeout, settings.mode, settings.runs, settings.commonTimeout)
         );
 
         const results = await Promise.all(promises);

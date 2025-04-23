@@ -90,7 +90,9 @@ app.get('/health', (req, res) => {
 
 app.post('/node-api/run', async (req, res, next) => {
     try {
-        const { code, timeout = 5000, runs = 1, mode = 'single' } = req.body;
+        const { code, timeout = 5000, runs = 1, mode = 'single', commonTimeout } = req.body;
+
+        console.log(commonTimeout);
 
         if (!code) {
             return res.status(400).json({
@@ -105,6 +107,11 @@ app.post('/node-api/run', async (req, res, next) => {
             let errors = [];
 
             for (let i = 0; i < runs; i++) {
+                if (commonTimeout && (totalTime > commonTimeout)) {
+                    errors.push(`Выполнение прервано по общему таймауту (${commonTimeout}мс). Выполнено ${i} из ${runs} прогонов.`);
+                    break;
+                }
+
                 const result = await runInNode(code, timeout);
 
                 if (result.error) {

@@ -47,6 +47,7 @@ const AppContent = () => {
     const [results, setResults] = useState<EnvironmentData | null>(null);
     const [settings, setSettings] = useState<Settings>({
         timeout: 5000,
+        commonTimeout: 20000,
         runs: 1,
         environments: {
             node: true,
@@ -58,8 +59,6 @@ const AppContent = () => {
 
     const handleRunCode = () => {
         setLoading(true);
-
-        console.log(settings);
 
         runCodeAsync({ code, settings })
             .then((response) => {

@@ -52,6 +52,13 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
         });
     };
 
+    const handleCommonTimeoutChange: TextFieldProps['onChange'] = (event) => {
+        onSettingsChange({
+            ...settings,
+            commonTimeout: Number(event.target.value)
+        });
+    };
+
     const handleRunsChange: TextFieldProps['onChange'] = (event) => {
         onSettingsChange({
             ...settings,
@@ -83,7 +90,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                                 <Checkbox
                                     checked={settings.environments.node}
                                     onChange={() => handleEnvironmentChange('node')}
-                                    size={isMobile ? "small" : "medium"}
+                                    size='small'
                                 />
                             }
                             label="Node.js"
@@ -93,7 +100,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                                 <Checkbox
                                     checked={settings.environments.deno}
                                     onChange={() => handleEnvironmentChange('deno')}
-                                    size={isMobile ? "small" : "medium"}
+                                    size='small'
                                 />
                             }
                             label="Deno"
@@ -103,7 +110,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                                 <Checkbox
                                     checked={settings.environments.bun}
                                     onChange={() => handleEnvironmentChange('bun')}
-                                    size={isMobile ? "small" : "medium"}
+                                    size='small'
                                 />
                             }
                             label="Bun"
@@ -118,7 +125,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                     <Select
                         value={settings.mode}
                         onChange={handleModeChange}
-                        size={isMobile ? "small" : "medium"}
+                        size='small'
                     >
                         <MenuItem value="single">Одиночный запуск</MenuItem>
                         <MenuItem value="average">Среднее время</MenuItem>
@@ -127,13 +134,25 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
 
                 <FormControl fullWidth>
                     <Typography variant="subtitle2" gutterBottom>
-                        Таймаут (мс)
+                        Таймаут одного прогона (мс)
                     </Typography>
                     <TextField
                         type="number"
                         value={settings.timeout}
                         onChange={handleTimeoutChange}
-                        size={isMobile ? "small" : "medium"}
+                        size='small'
+                    />
+                </FormControl>
+
+                <FormControl fullWidth>
+                    <Typography variant="subtitle2" gutterBottom>
+                        Общий таймаут запуска (мс)
+                    </Typography>
+                    <TextField
+                        type="number"
+                        value={settings.commonTimeout}
+                        onChange={handleCommonTimeoutChange}
+                        size='small'
                     />
                 </FormControl>
 
@@ -145,17 +164,17 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                         <TextField
                             value={settings.runs}
                             onChange={handleRunsChange}
-                            size={isMobile ? "small" : "medium"}
+                            size='small'
                         />
                     </FormControl>
                 )}
 
                 <Button
-                    variant="contained"
+                    variant="outlined"
                     onClick={onRun}
                     fullWidth
                     disabled={pending}
-                    size={isMobile ? "small" : "medium"}
+                    size={isMobile ? "medium" : "large"}
                 >
                     {pending ? 'Запуск...' : 'Запустить код'}
                 </Button>

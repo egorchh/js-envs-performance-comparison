@@ -147,7 +147,7 @@ export const ResultsView = ({ results, settings }: Props) => {
                                     }
                                 }}
                             >
-                                {result.output}
+                                {result.output.length > 800 ? `${result.output.slice(0, 500)}...` : result.output}
                             </Typography>
                         </Box>
                     )}

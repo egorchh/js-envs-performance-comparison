@@ -1,6 +1,7 @@
 export type Settings = {
     timeout: number;
     runs: number;
+    commonTimeout: number;
     environments: {
         node: boolean;
         deno: boolean;

@@ -102,7 +102,7 @@ const server = Bun.serve({
 
         if (url.pathname === '/bun-api/run' && req.method === 'POST') {
             try {
-                const { code, timeout = 5000, runs = 1, mode = 'single' } = await req.json();
+                const { code, timeout = 5000, runs = 1, mode = 'single', commonTimeout } = await req.json();
 
                 if (!code) {
                     return Response.json(
@@ -117,6 +117,11 @@ const server = Bun.serve({
                     let errors = [];
 
                     for (let i = 0; i < runs; i++) {
+                        if (commonTimeout && (totalTime > commonTimeout)) {
+                            errors.push(`Выполнение прервано по общему таймауту (${commonTimeout}мс). Выполнено ${i} из ${runs} прогонов.`);
+                            break;
+                        }
+
                         const result = await runInBun(code, timeout);
 
                         if (result.error) {

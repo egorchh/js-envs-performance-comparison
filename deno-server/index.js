@@ -89,7 +89,7 @@ router
     .post("/deno-api/run", async (ctx) => {
         try {
             const body = await ctx.request.body().value;
-            const { code, timeout = 5000, runs = 1, mode = 'single' } = body;
+            const { code, timeout = 5000, runs = 1, mode = 'single', commonTimeout } = body;
 
             if (!code) {
                 ctx.response.status = 400;
@@ -106,6 +106,11 @@ router
                 let errors = [];
 
                 for (let i = 0; i < runs; i++) {
+                    if (commonTimeout && (totalTime > commonTimeout)) {
+                        errors.push(`Выполнение прервано по общему таймауту (${commonTimeout}мс). Выполнено ${i} из ${runs} прогонов.`);
+                        break;
+                    }
+
                     const result = await runInDeno(code, timeout);
 
                     if (result.error) {

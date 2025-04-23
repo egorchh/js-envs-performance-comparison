@@ -37,7 +37,7 @@ export const PresetSelect = ({ onChange }: Props) => {
                     value={selectedKey ?? ""}
                     displayEmpty
                     onChange={handleChange}
-                    size={isMobile ? "small" : "medium"}
+                    size='small'
                 >
                     <MenuItem value="" disabled>
                         Выберите сниппет
