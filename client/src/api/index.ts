@@ -2,9 +2,9 @@ import { isDevelopment } from '../constants';
 import { EnvironmentData, RunCodeResponseDto, Settings } from '../types';
 
 const API_URLS = {
-    node: isDevelopment ? 'http://localhost:5001' : ((import.meta as any).env?.VITE_NODE_API_URL || '/node-api'),
-    deno: isDevelopment ? 'http://localhost:5002' : ((import.meta as any).env?.VITE_DENO_API_URL || '/deno-api'),
-    bun: isDevelopment ? 'http://localhost:5003' : ((import.meta as any).env?.VITE_BUN_API_URL || '/bun-api')
+    node: isDevelopment ? 'http://localhost:5001/node-api' : ((import.meta as any).env?.VITE_NODE_API_URL || '/node-api'),
+    deno: isDevelopment ? 'http://localhost:5002/deno-api' : ((import.meta as any).env?.VITE_DENO_API_URL || '/deno-api'),
+    bun: isDevelopment ? 'http://localhost:5003/bun-api' : ((import.meta as any).env?.VITE_BUN_API_URL || '/bun-api')
 };
 
 const runCodeInEnvironment = async (

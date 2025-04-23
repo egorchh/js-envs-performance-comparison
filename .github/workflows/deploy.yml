@@ -31,7 +31,7 @@ jobs:
 
   deploy:
     name: Deploy to Server
-    needs: test # Это гарантирует, что деплой произойдет только после успешного прохождения тестов
+    needs: test
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -55,4 +55,4 @@ jobs:
       - name: Deploy to server
         run: |
           rsync -avz --delete ./ ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }}:/opt/app/
-          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /opt/app && docker-compose down && docker-compose up -d --build"
+          ssh ${{ secrets.SERVER_USER }}@${{ secrets.SERVER_IP }} "cd /opt/app && docker-compose down && && git pull && docker-compose up -d --build"
