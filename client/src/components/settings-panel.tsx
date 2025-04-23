@@ -122,7 +122,6 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                     >
                         <MenuItem value="single">Одиночный запуск</MenuItem>
                         <MenuItem value="average">Среднее время</MenuItem>
-                        <MenuItem value="async">Асинхронный (Параллельный запуск сред)</MenuItem>
                     </Select>
                 </FormControl>
 

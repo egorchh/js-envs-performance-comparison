@@ -90,7 +90,7 @@ app.get('/health', (req, res) => {
 
 app.post('/node-api/run', async (req, res, next) => {
     try {
-        const { code, timeout = 5000 } = req.body;
+        const { code, timeout = 5000, runs = 1, mode = 'single' } = req.body;
 
         if (!code) {
             return res.status(400).json({
@@ -99,12 +99,51 @@ app.post('/node-api/run', async (req, res, next) => {
             });
         }
 
-        const result = await runInNode(code, timeout);
+        if (mode === 'average' && runs > 1) {
+            let totalTime = 0;
+            let totalOutput = '';
+            let errors = [];
 
-        res.status(200).json({
-            status: 'success',
-            data: result
-        });
+            for (let i = 0; i < runs; i++) {
+                const result = await runInNode(code, timeout);
+
+                if (result.error) {
+                    errors.push(result.error);
+                    break;
+                }
+
+                totalTime += result.executionTime;
+                totalOutput += result.output;
+            }
+
+            if (errors.length > 0) {
+                res.status(200).json({
+                    status: 'success',
+                    data: {
+                        error: errors[0],
+                        executionTime: 0
+                    }
+                });
+            } else {
+                const averageTime = totalTime / runs;
+                res.status(200).json({
+                    status: 'success',
+                    data: {
+                        executionTime: averageTime,
+                        averageTime: averageTime,
+                        totalTime: totalTime,
+                        output: totalOutput
+                    }
+                });
+            }
+        } else {
+            const result = await runInNode(code, timeout);
+
+            res.status(200).json({
+                status: 'success',
+                data: result
+            });
+        }
     } catch (error) {
         next(error);
     }

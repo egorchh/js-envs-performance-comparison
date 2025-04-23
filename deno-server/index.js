@@ -34,14 +34,27 @@ async function runInDeno(code, timeout) {
             stdin: "null",
         });
 
-        const timeoutId = setTimeout(() => {
-            try {
-                Deno.kill(process.pid, "SIGTERM");
-            } catch (e) { }
-        }, timeout);
+        const child = process.spawn();
 
-        const { stdout, stderr, code: exitCode } = await process.output();
-        clearTimeout(timeoutId);
+        // Создаем промис для таймаута, который отменит процесс
+        const timeoutPromise = new Promise((_, reject) => {
+            setTimeout(() => {
+                try {
+                    // В Deno необходимо использовать kill с правильным сигналом
+                    Deno.kill(child.pid, "SIGTERM");
+                    reject(new Error(`Execution timed out after ${timeout}ms`));
+                } catch (e) {
+                    reject(new Error(`Failed to kill process: ${e.message}`));
+                }
+            }, timeout);
+        });
+
+        // Дождемся либо завершения процесса, либо таймаута
+        const { stdout, stderr, code: exitCode } = await Promise.race([
+            child.output(),
+            timeoutPromise
+        ]);
+
         const executionTime = performance.now() - startTime;
 
         const output = new TextDecoder().decode(stdout);
@@ -76,7 +89,7 @@ router
     .post("/deno-api/run", async (ctx) => {
         try {
             const body = await ctx.request.body().value;
-            const { code, timeout = 5000 } = body;
+            const { code, timeout = 5000, runs = 1, mode = 'single' } = body;
 
             if (!code) {
                 ctx.response.status = 400;
@@ -87,13 +100,54 @@ router
                 return;
             }
 
-            const result = await runInDeno(code, timeout);
+            if (mode === 'average' && runs > 1) {
+                let totalTime = 0;
+                let totalOutput = '';
+                let errors = [];
 
-            ctx.response.status = 200;
-            ctx.response.body = {
-                status: "success",
-                data: result
-            };
+                for (let i = 0; i < runs; i++) {
+                    const result = await runInDeno(code, timeout);
+
+                    if (result.error) {
+                        errors.push(result.error);
+                        break;
+                    }
+
+                    totalTime += result.executionTime;
+                    totalOutput += result.output;
+                }
+
+                if (errors.length > 0) {
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        status: "success",
+                        data: {
+                            error: errors[0],
+                            executionTime: 0
+                        }
+                    };
+                } else {
+                    const averageTime = totalTime / runs;
+                    ctx.response.status = 200;
+                    ctx.response.body = {
+                        status: "success",
+                        data: {
+                            executionTime: averageTime,
+                            averageTime: averageTime,
+                            totalTime: totalTime,
+                            output: totalOutput
+                        }
+                    };
+                }
+            } else {
+                const result = await runInDeno(code, timeout);
+
+                ctx.response.status = 200;
+                ctx.response.body = {
+                    status: "success",
+                    data: result
+                };
+            }
         } catch (error) {
             ctx.response.status = 500;
             ctx.response.body = {

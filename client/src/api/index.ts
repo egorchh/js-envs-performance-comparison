@@ -10,7 +10,9 @@ const API_URLS = {
 const runCodeInEnvironment = async (
     environment: 'node' | 'deno' | 'bun',
     code: string,
-    timeout: number
+    timeout: number,
+    mode: 'single' | 'average' | 'async',
+    runs: number
 ): Promise<{
     status: string;
     data?: any;
@@ -25,7 +27,9 @@ const runCodeInEnvironment = async (
             },
             body: JSON.stringify({
                 code,
-                timeout
+                timeout,
+                mode,
+                runs
             }),
         });
 
@@ -59,7 +63,7 @@ export const runCodeAsync = async (
             .map(([env]) => env as keyof EnvironmentData);
 
         const promises = environments.map(env => 
-            runCodeInEnvironment(env, code || '', settings.timeout)
+            runCodeInEnvironment(env, code || '', settings.timeout, settings.mode, settings.runs)
         );
 
         const results = await Promise.all(promises);

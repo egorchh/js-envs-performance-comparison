@@ -102,7 +102,7 @@ const server = Bun.serve({
 
         if (url.pathname === '/bun-api/run' && req.method === 'POST') {
             try {
-                const { code, timeout = 5000 } = await req.json();
+                const { code, timeout = 5000, runs = 1, mode = 'single' } = await req.json();
 
                 if (!code) {
                     return Response.json(
@@ -111,12 +111,57 @@ const server = Bun.serve({
                     );
                 }
 
-                const result = await runInBun(code, timeout);
+                if (mode === 'average' && runs > 1) {
+                    let totalTime = 0;
+                    let totalOutput = '';
+                    let errors = [];
 
-                return Response.json(
-                    { status: 'success', data: result },
-                    { headers: corsHeaders }
-                );
+                    for (let i = 0; i < runs; i++) {
+                        const result = await runInBun(code, timeout);
+
+                        if (result.error) {
+                            errors.push(result.error);
+                            break;
+                        }
+
+                        totalTime += result.executionTime;
+                        totalOutput += result.output;
+                    }
+
+                    if (errors.length > 0) {
+                        return Response.json(
+                            {
+                                status: 'success',
+                                data: {
+                                    error: errors[0],
+                                    executionTime: 0
+                                }
+                            },
+                            { headers: corsHeaders }
+                        );
+                    } else {
+                        const averageTime = totalTime / runs;
+                        return Response.json(
+                            {
+                                status: 'success',
+                                data: {
+                                    executionTime: averageTime,
+                                    averageTime: averageTime,
+                                    totalTime: totalTime,
+                                    output: totalOutput
+                                }
+                            },
+                            { headers: corsHeaders }
+                        );
+                    }
+                } else {
+                    const result = await runInBun(code, timeout);
+
+                    return Response.json(
+                        { status: 'success', data: result },
+                        { headers: corsHeaders }
+                    );
+                }
             } catch (error) {
                 return Response.json(
                     { status: 'error', message: error.message },
