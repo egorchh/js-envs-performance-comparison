@@ -76,13 +76,19 @@ export const ResultsView = ({ results, settings }: Props) => {
     }), [isMobile]);
 
     return (
-        <Paper sx={{
-            p: { xs: 1.5, sm: 2 },
-            mt: { xs: 1.5, sm: 2 }
-        }}>
+        <Paper
+            sx={{
+                p: { xs: 1.5, sm: 2 },
+                mt: { xs: 1.5, sm: 2 }
+            }}
+            component="section"
+            aria-labelledby="results-title"
+        >
             <Typography
                 variant={isMobile ? "subtitle1" : "h6"}
                 gutterBottom
+                component="h2"
+                id="results-title"
                 sx={{
                     fontSize: {
                         xs: '1rem',
@@ -93,15 +99,26 @@ export const ResultsView = ({ results, settings }: Props) => {
                 Результаты
             </Typography>
 
-            <Box sx={{ mb: { xs: 1.5, sm: 2 } }}>
+            <Box
+                sx={{ mb: { xs: 1.5, sm: 2 } }}
+                role="img"
+                aria-label="График сравнения времени выполнения между различными средами"
+            >
                 <Bar data={chartData} options={chartOptions} />
             </Box>
 
             {Object.entries(results).map(([env, result]) => (
-                <Box key={env} sx={{ mb: { xs: 1.5, sm: 2 } }}>
+                <Box
+                    key={env}
+                    sx={{ mb: { xs: 1.5, sm: 2 } }}
+                    component="article"
+                    aria-labelledby={`result-${env}-title`}
+                >
                     <Typography
                         variant={isMobile ? "subtitle2" : "subtitle1"}
                         gutterBottom
+                        component="h3"
+                        id={`result-${env}-title`}
                         sx={{
                             fontSize: {
                                 xs: '0.9rem',
@@ -135,7 +152,10 @@ export const ResultsView = ({ results, settings }: Props) => {
                             p: { xs: 0.75, sm: 1 },
                             bgcolor: 'background.paper',
                             borderRadius: 1
-                        }}>
+                        }}
+                            role="log"
+                            aria-label={`Вывод программы в ${env}`}
+                        >
                             <Typography
                                 variant="body2"
                                 component="pre"
@@ -162,6 +182,7 @@ export const ResultsView = ({ results, settings }: Props) => {
                                     sm: '0.875rem'
                                 }
                             }}
+                            role="alert"
                         >
                             <ResultError error={result.error} />
                         </Typography>

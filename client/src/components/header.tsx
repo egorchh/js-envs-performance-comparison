@@ -5,11 +5,11 @@ export const Header = () => {
     const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
 
     return (
-        <AppBar position="static" className=''>
+        <AppBar position="static" component="header" role="banner">
             <Toolbar sx={{ px: { xs: 1, sm: 2, md: 3 } }}>
                 <Typography
                     variant={isMobile ? "subtitle1" : "h6"}
-                    component="div"
+                    component="h1"
                     sx={{
                         flexGrow: 1,
                         fontSize: {

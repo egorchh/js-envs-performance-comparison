@@ -12,6 +12,7 @@ import {
     Stack,
     useTheme,
     useMediaQuery,
+    InputLabel,
     type SelectProps,
     type TextFieldProps
 } from '@mui/material';
@@ -71,26 +72,29 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
             p: { xs: 1.5, sm: 2 },
             mb: { xs: 1.5, sm: 2 }
         }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" component="h2" gutterBottom>
                 Настройки
             </Typography>
 
-            <Stack spacing={{ xs: 1.5, sm: 2 }}>
+            <Stack spacing={{ xs: 1.5, sm: 2 }} role="form" aria-label="Настройки запуска кода">
                 <Box>
-                    <Typography variant="subtitle2" gutterBottom>
+                    <Typography variant="subtitle2" component="h3" gutterBottom id="env-group-label">
                         Среды исполнения
                     </Typography>
                     <Box sx={{
                         display: 'flex',
                         flexDirection: { xs: 'column', sm: 'row' },
                         gap: { xs: 0.5, sm: 1 }
-                    }}>
+                    }}
+                        role="group"
+                        aria-labelledby="env-group-label">
                         <FormControlLabel
                             control={
                                 <Checkbox
                                     checked={settings.environments.node}
                                     onChange={() => handleEnvironmentChange('node')}
                                     size='small'
+                                    inputProps={{ 'aria-label': 'Выбрать Node.js' }}
                                 />
                             }
                             label="Node.js"
@@ -101,6 +105,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                                     checked={settings.environments.deno}
                                     onChange={() => handleEnvironmentChange('deno')}
                                     size='small'
+                                    inputProps={{ 'aria-label': 'Выбрать Deno' }}
                                 />
                             }
                             label="Deno"
@@ -111,6 +116,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                                     checked={settings.environments.bun}
                                     onChange={() => handleEnvironmentChange('bun')}
                                     size='small'
+                                    inputProps={{ 'aria-label': 'Выбрать Bun' }}
                                 />
                             }
                             label="Bun"
@@ -119,13 +125,15 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                 </Box>
 
                 <FormControl fullWidth>
-                    <Typography variant="subtitle2" gutterBottom>
+                    <Typography variant="subtitle2" component="h3" gutterBottom id="mode-label">
                         Режим выполнения
                     </Typography>
                     <Select
                         value={settings.mode}
                         onChange={handleModeChange}
                         size='small'
+                        aria-labelledby="mode-label"
+                        inputProps={{ 'aria-label': 'Выберите режим выполнения' }}
                     >
                         <MenuItem value="single">Одиночный запуск</MenuItem>
                         <MenuItem value="average">Среднее время</MenuItem>
@@ -133,7 +141,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                 </FormControl>
 
                 <FormControl fullWidth>
-                    <Typography variant="subtitle2" gutterBottom>
+                    <Typography variant="subtitle2" component="h3" gutterBottom id="timeout-label">
                         Таймаут одного прогона (мс)
                     </Typography>
                     <TextField
@@ -141,11 +149,16 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                         value={settings.timeout}
                         onChange={handleTimeoutChange}
                         size='small'
+                        aria-labelledby="timeout-label"
+                        inputProps={{
+                            'aria-label': 'Введите таймаут одного прогона в миллисекундах',
+                            min: 100
+                        }}
                     />
                 </FormControl>
 
                 <FormControl fullWidth>
-                    <Typography variant="subtitle2" gutterBottom>
+                    <Typography variant="subtitle2" component="h3" gutterBottom id="common-timeout-label">
                         Общий таймаут запуска (мс)
                     </Typography>
                     <TextField
@@ -153,18 +166,29 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                         value={settings.commonTimeout}
                         onChange={handleCommonTimeoutChange}
                         size='small'
+                        aria-labelledby="common-timeout-label"
+                        inputProps={{
+                            'aria-label': 'Введите общий таймаут запуска в миллисекундах',
+                            min: 1000
+                        }}
                     />
                 </FormControl>
 
                 {settings.mode === 'average' && (
                     <FormControl fullWidth>
-                        <Typography variant="subtitle2" gutterBottom>
+                        <Typography variant="subtitle2" component="h3" gutterBottom id="runs-label">
                             Количество запусков
                         </Typography>
                         <TextField
                             value={settings.runs}
                             onChange={handleRunsChange}
                             size='small'
+                            aria-labelledby="runs-label"
+                            type="number"
+                            inputProps={{
+                                'aria-label': 'Введите количество запусков',
+                                min: 1
+                            }}
                         />
                     </FormControl>
                 )}
@@ -175,6 +199,7 @@ export const SettingsPanel = ({ settings, onSettingsChange, onRun, pending }: Pr
                     fullWidth
                     disabled={pending}
                     size={isMobile ? "medium" : "large"}
+                    aria-busy={pending}
                 >
                     {pending ? 'Запуск...' : 'Запустить код'}
                 </Button>

@@ -7,7 +7,8 @@ import {
     SelectProps,
     Typography,
     useMediaQuery,
-    useTheme
+    useTheme,
+    InputLabel
 } from "@mui/material";
 import { presets } from "./constants";
 
@@ -29,7 +30,7 @@ export const PresetSelect = ({ onChange }: Props) => {
 
     return (
         <Paper sx={{ p: theme.spacing(2), mb: theme.spacing(2) }}>
-            <Typography variant="h6" gutterBottom>
+            <Typography variant="h6" component="h2" gutterBottom id="presets-label">
                 Заготовки кода
             </Typography>
             <FormControl fullWidth>
@@ -38,6 +39,12 @@ export const PresetSelect = ({ onChange }: Props) => {
                     displayEmpty
                     onChange={handleChange}
                     size='small'
+                    labelId="preset-select-label"
+                    id="preset-select"
+                    aria-labelledby="presets-label preset-select-label"
+                    inputProps={{
+                        'aria-label': 'Выберите заготовку кода'
+                    }}
                 >
                     <MenuItem value="" disabled>
                         Выберите сниппет

@@ -34,6 +34,19 @@ const darkTheme = createTheme({
             xl: 1536,
         },
     },
+    components: {
+        MuiButtonBase: {
+            defaultProps: {
+                // Улучшаем доступность для всех кнопок
+                disableRipple: false,
+            },
+        },
+        MuiButton: {
+            defaultProps: {
+                disableElevation: false,
+            },
+        },
+    },
 });
 
 const AppContent = () => {
@@ -75,7 +88,8 @@ const AppContent = () => {
 
                 setResults(response.data);
             })
-            .catch(() => {
+            .catch((error) => {
+                console.error('Ошибка при запуске кода:', error);
                 toast.error(RUN_CODE_FAILED_REQUEST);
             })
             .finally(() => setLoading(false));
@@ -92,6 +106,8 @@ const AppContent = () => {
                     flex: 1,
                     px: { xs: 1, sm: 2, md: 3 }
                 }}
+                component="main"
+                id="main-content"
             >
                 <Box sx={{
                     display: 'grid',
@@ -127,8 +143,10 @@ export const App = () => {
     return (
         <ThemeProvider theme={darkTheme}>
             <CssBaseline />
-            <AppContent />
-            <Toaster position="top-center" />
+            <div lang="ru" dir="ltr">
+                <AppContent />
+                <Toaster position="top-center" />
+            </div>
         </ThemeProvider>
     );
 };
